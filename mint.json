@@ -1,0 +1,89 @@
+{
+  "$schema": "https://mintlify.com/schema.json",
+  "name": "Compound Tutorials",
+  "favicon": "public/favicon.ico",
+  "theme": "prism",
+  "colors": {
+    "primary": "#00D395"
+  },
+  "topbarCtaButton": {
+    "name": "Get Started",
+    "url": "chapter-1-introduction-to-compound/what-is-compound"
+  },
+  "topbarLinks": [
+    {
+      "name": "Compound Finance",
+      "url": "https://compound.finance"
+    }
+  ],
+  "search": {
+    "enabled": true
+  },
+  "feedback": {
+    "suggestEdit": true,
+    "raiseIssue": true
+  },
+  "footerSocials": {
+    "twitter": "https://twitter.com/compoundfinance",
+    "github": "https://github.com/compound-finance"
+  },
+  "navigation": [
+    {
+      "group": "Introduction to Compound",
+      "pages": [
+        "chapter-1-introduction-to-compound/index",
+        "chapter-1-introduction-to-compound/what-is-compound",
+        "chapter-1-introduction-to-compound/introducing-comet-compound-v3",
+        "chapter-1-introduction-to-compound/whats-next"
+      ]
+    },
+    {
+      "group": "Markets, Utilization & Interest Rates",
+      "pages": [
+        "chapter-2-markets-utilization-and-interest-rates/index",
+        "chapter-2-markets-utilization-and-interest-rates/1.-what-is-a-market-in-comet",
+        "chapter-2-markets-utilization-and-interest-rates/2.-utilization-balancing-supply-and-demand",
+        "chapter-2-markets-utilization-and-interest-rates/3.-the-kink-a-flexible-threshold",
+        "chapter-2-markets-utilization-and-interest-rates/4.-interest-rate-parameters",
+        "chapter-2-markets-utilization-and-interest-rates/5.-supply-and-borrow-interest-rates-vs.-utilization-rate-chart",
+        "chapter-2-markets-utilization-and-interest-rates/6.-why-this-matters"
+      ]
+    },
+    {
+      "group": "Hands-On Tutorial (Step by Step)",
+      "pages": [
+        "chapter-3-hands-on-tutorial-step-by-step/index",
+        "chapter-3-hands-on-tutorial-step-by-step/1.-environment-setup",
+        "chapter-3-hands-on-tutorial-step-by-step/2.-getting-sepolia-eth-and-weth",
+        "chapter-3-hands-on-tutorial-step-by-step/3.-project-structure",
+        "chapter-3-hands-on-tutorial-step-by-step/4.-creating-the-index.js-script",
+        "chapter-3-hands-on-tutorial-step-by-step/5.-run-the-script",
+        "chapter-3-hands-on-tutorial-step-by-step/6.-next-steps"
+      ]
+    },
+    {
+      "group": "Repaying, Withdrawing & Managing Your Position",
+      "pages": [
+        "chapter-4-repaying-withdrawing-and-managing-your-position/index",
+        "chapter-4-repaying-withdrawing-and-managing-your-position/1.-updating-index.js",
+        "chapter-4-repaying-withdrawing-and-managing-your-position/2.-example-usage-in-your-main-execution",
+        "chapter-4-repaying-withdrawing-and-managing-your-position/3.-recap",
+        "chapter-4-repaying-withdrawing-and-managing-your-position/4.-summary-and-best-practices"
+      ]
+    },
+    {
+      "group": "Using the Compound.js SDK",
+      "pages": [
+        "chapter-5-using-the-compound.js-sdk/index",
+        "chapter-5-using-the-compound.js-sdk/getting-started",
+        "chapter-5-using-the-compound.js-sdk/performing-common-actions"
+      ]
+    },
+    {
+      "group": "Additional Resources",
+      "pages": [
+        "chapter-6-additional-resources"
+      ]
+    }
+  ]
+} 
