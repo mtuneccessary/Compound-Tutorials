@@ -8,7 +8,7 @@
   },
   "topbarCtaButton": {
     "name": "Get Started",
-    "url": "chapter-1-introduction-to-compound/what-is-compound"
+    "url": "/chapter-1-introduction-to-compound"
   },
   "topbarLinks": [
     {
@@ -28,6 +28,12 @@
     "github": "https://github.com/compound-finance"
   },
   "navigation": [
+    {
+      "group": "Introduction",
+      "pages": [
+        "index"
+      ]
+    },
     {
       "group": "Introduction to Compound",
       "pages": [
