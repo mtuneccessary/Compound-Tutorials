@@ -1,0 +1,41 @@
+# Performing Common Actions
+
+## Performing Common Actions
+
+**Supplying Assets**
+
+Supply assets to earn interest or repay loans:
+
+```javascript
+await comet.supply(Compound.USDC, 1000);
+console.log("Supplied USDC to the protocol.");
+```
+
+**Borrowing Assets**
+
+Borrowing is as simple as calling the withdraw function:
+
+```javascript
+await comet.withdraw(Compound.USDC, 500);
+console.log("Borrowed 500 USDC.");
+```
+
+**Checking Balances**
+
+Fetch your current balance of any asset:
+
+```javascript
+const balance = await comet.getAccountBalance(Compound.USDC);
+console.log(`Your USDC balance is: ${balance}`);
+```
+
+**Fetching Market Data**
+
+Retrieve live market data:
+
+```javascript
+const markets = await comet.getMarkets();
+console.log(markets);
+```
+
+This integration provides real-time insights into asset performance and protocol metrics, empowering developers to build sophisticated tools.

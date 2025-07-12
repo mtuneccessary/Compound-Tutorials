@@ -1,0 +1,24 @@
+{
+  "name": "compound-docs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "export:gitbook": "node scripts/export_gitbook.js",
+    "cleanup:docs": "node scripts/cleanup_markdown.js",
+    "generate:config": "node scripts/generate_docs_json.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "axios": "^1.10.0",
+    "jsdom": "^26.1.0",
+    "mintlify-cli": "^1.1.0",
+    "slugify": "^1.6.6",
+    "turndown": "^7.2.0",
+    "xml2js": "^0.6.2"
+  }
+}

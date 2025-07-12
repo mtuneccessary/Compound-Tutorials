@@ -1,0 +1,49 @@
+# 2. Example Usage in Your Main Execution
+
+At the bottom of your index.js, you can now integrate these new functions. For instance:
+
+```javascript
+(async () => {
+  try {
+    // 1. Check current debt
+    const debtRaw = await getUsdcDebt();
+    const usdcDecimals = await usdc.decimals();
+    console.log(`Debt in raw units: ${debtRaw.toString()}`);
+    console.log(`Debt in USDC: ${ethers.utils.formatUnits(debtRaw, usdcDecimals)}`);
+
+    // 2. Partially repay some USDC (example: half your debt)
+    const halfDebt = debtRaw.div(2);
+    // Approve & repay
+    await approveUsdcForRepayment(halfDebt);
+    await repayUsdc(halfDebt);
+
+    // 3. Check updated debt
+    const newDebtRaw = await getUsdcDebt();
+    console.log(`New debt in USDC: ${ethers.utils.formatUnits(newDebtRaw, usdcDecimals)}`);
+
+    // 4. Fully repay the remaining debt
+    await approveUsdcForRepayment(newDebtRaw);
+    await repayUsdc(newDebtRaw);
+
+    // 5. Confirm your debt is now zero
+    const finalDebtRaw = await getUsdcDebt();
+    console.log(`Final debt: ${ethers.utils.formatUnits(finalDebtRaw, usdcDecimals)} (should be 0)`);
+
+    // 6. (Optional) Withdraw all or some WETH if you have no debt or enough collateral
+    const withdrawAmount = ethers.utils.parseUnits("0.1", await weth.decimals());
+    await withdrawWeth(withdrawAmount);
+
+    console.log("Repayment and withdrawal steps completed!");
+  } catch (err) {
+    console.error("Error in repayment/withdrawal flow:", err);
+  }
+})();
+```
+
+Explanation:
+
+* getUsdcDebt() shows how much you owe.
+* We repay half of it first, just to illustrate partial repayment.
+* We check the updated debt, then repay the rest.
+* After full repayment, your USDC debt should be 0.
+* Finally, you withdraw some of your WETH collateral (if you no longer need it locked in Comet).

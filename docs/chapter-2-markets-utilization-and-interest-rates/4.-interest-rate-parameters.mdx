@@ -1,0 +1,13 @@
+# 4. Interest Rate Parameters
+
+Every Comet contract has its own set of parameters that define how interest rates behave:
+
+• Base Rate: The baseline interest rate when utilization is near zero.
+
+• Slope Low: How fast the rate climbs below the kink.
+
+• Slope High: The steeper rate of increase once the kink is surpassed.
+
+• Kink Utilization: The specific utilization percentage at which the slope switches from low to high.
+
+Governance sets these parameters for each Comet, so a USDC-based Comet could have a different kink or slope from an ETH-based Comet.

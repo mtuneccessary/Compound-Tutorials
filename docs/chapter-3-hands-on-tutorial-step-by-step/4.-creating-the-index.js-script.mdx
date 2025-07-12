@@ -1,0 +1,177 @@
+# 4. Creating the index.js Script
+
+Open your favorite code editor (e.g., VSCode) and open the index.js file. We’ll break down the code in chunks to clarify each step.
+
+***
+
+
+
+#### 4.1 Import Libraries & Load Environment Variables
+
+#### index.js
+
+```javascript
+require('dotenv').config();
+const { ethers } = require('ethers');
+
+// Load RPC URL and private key from .env
+const RPC_URL = process.env.SEPOLIA_RPC_URL;
+const PRIVATE_KEY = process.env.PRIVATE_KEY;
+
+// Create a provider & signer for Sepolia
+const provider = new ethers.providers.JsonRpcProvider(RPC_URL);
+const signer = new ethers.Wallet(PRIVATE_KEY, provider);
+
+```
+
+Explanation:&#x20;
+
+• require('dotenv').config() loads environment variables from your .env file.&#x20;
+
+• ethers.providers.JsonRpcProvider connects to the Ethereum network (Sepolia in this case).&#x20;
+
+• new ethers.Wallet(...) creates a signer capable of sending transactions, referencing your private key and the given provider.
+
+
+
+#### 4.2 Define Contract Addresses & ABIs
+
+```javascript
+// Sepolia USDC Comet instance
+const cometAddress = "0xAec1F48e02Cfb822Be958B68C7957156EB3F0b6e";
+
+// Tokens
+const wethAddress  = "0x2D5ee574e710219a521449679A4A7f2B43f046ad";  // WETH on Sepolia
+const usdcAddress  = "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238";  // USDC on Sepolia
+
+// Minimal ABIs (only the functions we need)
+const cometAbi = [
+  "function supply(address asset, uint256 amount) external",
+  "function withdraw(address asset, uint256 amount) external",
+  "function borrowBalanceOf(address account) external view returns (uint256)"
+];
+
+const erc20Abi = [
+  "function approve(address spender, uint256 amount) external returns (bool)",
+  "function balanceOf(address account) external view returns (uint256)",
+  "function decimals() external view returns (uint8)"
+];
+```
+
+Explanation:
+
+&#x20;• Addresses are specific to the Sepolia USDC market.&#x20;
+
+• We only include the smart contract functions needed for this tutorial (supply, withdraw, borrowBalanceOf, approve, balanceOf, decimals).&#x20;
+
+• If you need additional functionality, add the relevant pieces of ABI or use the full ABI from the Comet documentation.
+
+
+
+#### 4.3 Create Contract Instances
+
+```javascript
+// Create contract objects for Comet, WETH, and USDC
+const comet = new ethers.Contract(cometAddress, cometAbi, signer);
+const weth  = new ethers.Contract(wethAddress, erc20Abi, signer);
+const usdc  = new ethers.Contract(usdcAddress, erc20Abi, signer);
+```
+
+Explanation:&#x20;
+
+• Each ethers.Contract instance requires an address, ABI, and signer.&#x20;
+
+• comet: The main Compound V3 (Comet) contract for USDC base.&#x20;
+
+• weth: The WETH contract. We’ll deposit this as collateral.&#x20;
+
+• usdc: The base asset contract (USDC), which we’ll borrow.
+
+
+
+#### 4.4 Approve & Supply WETH as Collateral
+
+```javascript
+async function supplyWethAsCollateral(amount) {
+  console.log(`Approving ${amount.toString()} WETH for Comet...`);
+  const approveTx = await weth.approve(cometAddress, amount);
+  await approveTx.wait();
+
+  console.log(`Supplying ${amount.toString()} WETH to Comet...`);
+  const supplyTx = await comet.supply(wethAddress, amount);
+  await supplyTx.wait();
+  console.log("WETH supplied as collateral.");
+}
+```
+
+Explanation:&#x20;
+
+• First, you approve comet to move your WETH.&#x20;
+
+• Then you call supply(...) on the comet contract, which effectively deposits WETH as your collateral.&#x20;
+
+• amount should be in the correct decimal format (we’ll handle that soon).
+
+
+
+#### 4.5 Borrow USDC (Base Asset)
+
+```javascript
+async function borrowUsdc(amount) {
+  console.log(`Borrowing ${amount.toString()} USDC from Comet...`);
+  const borrowTx = await comet.withdraw(usdcAddress, amount);
+  await borrowTx.wait();
+  console.log("USDC borrowed successfully.");
+}
+```
+
+Explanation:&#x20;
+
+• In Compound V3, “borrowing” is done by withdrawing the base asset from the contract.&#x20;
+
+• This adds to your negative “base” balance, meaning you owe that amount plus interest over time.
+
+
+
+
+
+4.6 Putting It All Together
+
+Finally, we wrap these functions in a main execution block:
+
+```javascript
+(async () => {
+  try {
+    // 1. Fetch decimals for WETH
+    const wethDecimals = await weth.decimals();
+    // Convert 0.2 WETH to correct decimal format
+    const wethSupplyAmount = ethers.utils.parseUnits("0.2", wethDecimals);
+
+    // Supply 0.2 WETH as collateral
+    await supplyWethAsCollateral(wethSupplyAmount);
+
+    // 2. Borrow 50 USDC
+    const usdcDecimals = await usdc.decimals();
+    const borrowAmount = ethers.utils.parseUnits("50", usdcDecimals);
+    await borrowUsdc(borrowAmount);
+
+    // 3. Check your new borrow balance
+    const debt = await comet.borrowBalanceOf(signer.address);
+    console.log(
+      `Your USDC debt is: ${ethers.utils.formatUnits(debt, usdcDecimals)}`
+    );
+    console.log("All steps completed successfully!");
+  } catch (err) {
+    console.error("Error in script:", err);
+  }
+})();
+```
+
+Explanation:
+
+* We get WETH’s decimals and parse 0.2 WETH into the correct big integer format.
+* Supply that WETH to Comet, thereby increasing our borrowing capacity.
+* Get USDC’s decimals, parse 50 USDC, then borrow it.
+* Check your current USDC debt with borrowBalanceOf(...).
+* Log everything out for clarity.
+

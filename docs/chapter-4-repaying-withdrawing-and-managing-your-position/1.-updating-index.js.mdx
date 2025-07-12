@@ -1,0 +1,108 @@
+# 1. Updating index.js
+
+In Chapter 3, you created a JavaScript project with an index.js file that:&#x20;
+
+• Connected to Sepolia with a provider and signer.&#x20;
+
+• Used contract instances of Comet, WETH, and USDC.
+
+&#x20;• Showed how to supply WETH as collateral and borrow USDC.&#x20;
+
+In this chapter, we’ll extend that same index.js with new functions for repaying what you borrowed and withdrawing your collateral.
+
+
+
+Let’s assume your index.js from Chapter 3 has code similar to this structure:
+
+• Environment variable load (dotenv)• Ethers provider and signer setup
+
+• Contract addresses & ABIs (comet, weth, usdc)
+
+• Functions for:
+
+– supplyWethAsCollateral(amount)
+
+– borrowUsdc(amount)
+
+• A main execution block with `(async () => { /* ... */ })()`
+
+Now, we’ll show you how to integrate new repayment and withdraw collage.&#x20;
+
+Just place the following code chunks below the existing supply/borrow functions (but above your main execution block or in a dedicated helper module if you prefer)
+
+
+
+#### 1.1 Adding a Function to Check Debt
+
+First, we add a getUsdcDebt function. This will help you see how much you currently owe in USDC (the base asset).
+
+```javascript
+async function getUsdcDebt() {
+  const debtRaw = await comet.borrowBalanceOf(signer.address);
+  console.log("Current USDC debt (raw units):", debtRaw.toString());
+  return debtRaw;
+}
+```
+
+Explanation:&#x20;
+
+• If USDC has 6 decimals, and this function returns 50,000,000, that would be 50 USDC in standard decimal format.
+
+
+
+#### 1.2 Approving USDC for Repayment
+
+Just like you approved WETH for supplying, you need to approve Comet to handle your USDC when repaying.
+
+
+
+```javascript
+async function approveUsdcForRepayment(amount) {
+  console.log(`Approving ${amount.toString()} USDC for repayment...`);
+  const tx = await usdc.approve(cometAddress, amount);
+  await tx.wait();
+  console.log("USDC approved successfully for repayment.");
+}
+```
+
+Explanation:&#x20;
+
+• The user is allowing the Comet contract to pull USDC from their account to cover the repayment.
+
+
+
+#### 1.3 Repaying Your Borrowed USDC
+
+Once approved, you can repay USDC by “supplying” it back to Comet. This reduces (or eliminates) your debt.
+
+```javascript
+async function repayUsdc(amount) {
+  console.log(`Repaying ${amount.toString()} USDC...`);
+  const tx = await comet.supply(usdcAddress, amount);
+  await tx.wait();
+  console.log("USDC repaid successfully.");
+}
+```
+
+Explanation:&#x20;
+
+• The supply(...) function works for any token, including the base asset.&#x20;
+
+• Because you have a negative balance (i.e., a debt) in USDC, supplying USDC reduces that negative balance.
+
+
+
+#### 1.4 Withdrawing Collateral (WETH)
+
+After you repay what you owe (or if you simply haven’t borrowed much), you can remove some or all of your WETH collateral:
+
+```javascript
+async function withdrawWeth(amount) {
+  console.log(`Withdrawing ${amount.toString()} WETH...`);
+  const tx = await comet.withdraw(wethAddress, amount);
+  await tx.wait();
+  console.log("WETH withdrawn successfully.");
+}
+```
+
+If you still have a debt, make sure you don’t drop below the required collateral threshold. Otherwise, the transaction may revert.

@@ -1,0 +1,20 @@
+# Getting Started
+
+#### Getting Started
+
+Compound.js simplifies interaction with the protocol, making it developer-friendly. Here’s how to set it up and perform key actions:
+
+1.  **Install the Library**:
+
+    ```sh
+    npm install @compound-finance/compound-js
+    ```
+2.  **Set Up the SDK**:
+
+    ```javascript
+    const Compound = require('@compound-finance/compound-js');
+    const compound = new Compound(window.ethereum); // Or use a custom RPC URL
+    const comet = compound.comet.MAINNET_USDC(); 
+    ```
+
+[NextPerforming Common Actions](https://app.gitbook.com/o/iWpDOlQnXAKIR0Nwt0L3/s/zYnqlkX8AGsqks3pXvF1/~/changes/11/chapter-5-using-the-compound.js-sdk/performing-common-actions)
